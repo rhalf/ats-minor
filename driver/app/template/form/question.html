@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div ng-controller="questionController">
+        <div class="row">
+            <form ng-show="question.index > 0 && question.index < (itemCount)">
+                <div id="question">
+                    <div class="col-md-6">
+                        <div class="image-frame">
+                            <img class="center-block" ng-src="image/question/{{question.image}}" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p><strong>{{question.index}}/{{itemCount - 1}} ) </strong> {{question.question}} <strong>Ref #{{question.number}}</strong></p>
+                        <div ng-repeat="option in question.options">
+                            <label>
+                                <input type="radio" ng-model="item.answer" name="radioValue" ng-value="{{$index}}" /> {{option}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+            <div ng-show="question.index == itemCount">
+                <center><h2>Summary</h2></center>
+                <center><h3>Score : {{examinee.score}}  |  Result : {{examinee.result}}</h3></center>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Reference</th>
+                            <th>IsCorrect</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="answer in examinee.answer">
+                            <td>{{answer.question}}</td>
+                            <td>{{answer.reference}}</td>
+                            <td>{{answer.isCorrect}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+
+
+        <div class="container-fluid">
+            <button class="btn btn-default" ng-click="start()" ng-show="question.index <= 0 || question.index == null">Start</button>
+            <button class="btn btn-default" ng-click="next()" ng-show="question.index > 0 && question.index < (itemCount)">Next</button>
+            <button class="btn btn-default" ng-click="reset()" ng-show="question.index > 0">Reset</button>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div class="container" ng-controller="mainController">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="title">Driving Theory (alpha version)</h1>
+                <h5 class="title">Powered by Advanced Technologies and Solution</h5>
+            </div>
+            <div class="panel-body">
+
+                <uib-tabset active="activeJustified" justified="true">
+                    <uib-tab index="0" heading="Home"><div home-directive /></uib-tab>
+                    <uib-tab index="1" heading="Test"><div question-directive /></uib-tab>
+                    <uib-tab index="2" heading="Reviewer"><div reviewer-directive /></uib-tab>
+                </uib-tabset>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

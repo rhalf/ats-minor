@@ -1,0 +1,111 @@
+<div style="display:inline-blocked;padding:5px;">
+	<button id="userAddNew">Add</button>
+	<button id="userResfresh">Refresh</button>
+</div>
+
+<div class="datagrid">
+	<table class="user">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Password</th>
+				<th>DateTime Created</th>
+				<th>DateTime Renewed</th>
+				<th>DateTime Expired</th>
+				<th>Harsh</th>
+				<th>Email</th>
+				<th>Privilege</th>
+				<th>Status</th>
+				<th>Login Count</th>
+				<th>Login DateTime</th>
+				<th>Option</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+<script type="text/javascript">
+	$('#userAddNew').button({
+		icons: {
+			primary: "ui-icon-plusthick"
+		}
+	});
+	$('#userAddNew').button().click(function(){
+		dialogUserAdd();
+	});
+
+	$('#userResfresh').button({
+		icons: {
+			primary: "ui-icon-refresh"
+		}
+	});
+	$('#userResfresh').button().click(function(){
+		ats.load(function(){
+			loadUser();
+		});
+	});
+
+	function loadUser() {
+		$('.user tbody').remove();
+		$('.user').append('<tbody></tbody>');
+		$.each(ats.ListUser, function(index, user){
+			var privilege = ats.getObject(ats.ListPrivilege,user.Privilege);
+			var status = ats.getObject(ats.ListStatus,user.Status);
+
+
+			
+			$('.user tbody').append(
+				"<tr><td>" + 
+				user.Id + "</td><td>" + 
+				user.Name + "</td><td>" + 
+				user.Password + "</td><td>" + 
+				user.DateTimeCreated + "</td><td>" + 
+				user.DateTimeRenewed + "</td><td>" +
+				user.DateTimeExpired + "</td><td>" +
+
+				user.Harsh + "</td><td>" +
+				user.Email + "</td><td>" +
+				privilege.Name + "</td><td>" +
+				status.Name + "</td><td>" +
+				user.LoginCount + "</td><td>" +
+				user.LoginDateTime + "</td><td>" +
+				"<span style='display: inline-block'>" +
+				"<button id='"+ user.Id + "' class='buttonUserUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+				"<button id='"+ user.Id + "' class='buttonUserDelete'><span class='ui-icon ui-icon-trash'></span></button>" +
+				"<button id='"+ user.Id + "' class='buttonUserPassword'><span class='ui-icon ui-icon-locked'></span></button>" +
+				"</span>" +
+				"</td></tr>"
+				);
+			
+		});
+
+$('.buttonUserUpdate').click(function () {
+	var id = this.id;
+	$.each(ats.ListUser,function( index, user ){
+		if (user.Id == id) {
+			dialogUserUpdate(user);
+		}
+	});
+});
+$('.buttonUserDelete').click(function () {
+	var id = this.id;
+	$.each(ats.ListUser,function( index, user){
+		if (user.Id == id) {
+			dialogUserDelete(user);
+		}
+	});
+});
+$('.buttonUserPassword').click(function () {
+	var id = this.id;
+	$.each(ats.ListUser,function( index, user){
+		if (user.Id == id) {
+			dialogUserUpdatePassword(user);
+		}
+	});
+});
+}
+
+loadUser();
+</script>
+

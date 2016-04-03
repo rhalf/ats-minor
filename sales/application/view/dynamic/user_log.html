@@ -1,0 +1,56 @@
+<div style="display:inline-blocked;padding:5px;">
+	<button id="userLogResfresh">Refresh</button>
+</div>
+
+<div class="datagrid">
+	<table class="userLog">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>DateTime</th>
+				<th>User</th>
+				<th>TableName</th>
+				<th>ItemName</th>
+				<th>Type</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+<script type="text/javascript">
+	$('#userLogResfresh').button({
+		icons: {
+			primary: "ui-icon-refresh",
+		}
+	});
+
+	$('#userLogResfresh').button().click(function(){
+		ats.load(function () {
+			loadUserLog();
+		});
+	});
+
+
+
+	function loadUserLog() {
+		$('.userLog tbody').remove();
+		$('.userLog').append('<tbody></tbody>');
+		
+		$.each(ats.ListUserLog, function(index, userLog){
+			var user = ats.getObject(ats.ListUser, userLog.User);
+			var userLogType = ats.getObject(ats.ListUserLogType, userLog.Type);
+			$('.userLog tbody').append(
+				"<tr><td>" + 
+				userLog.Id + "</td><td>" + 
+				userLog.DateTime + "</td><td>" + 
+				user.Name + "</td><td>" + 
+				userLog.TableName + "</td><td>" + 
+				userLog.ItemName + "</td><td>" + 
+				userLogType.Name + "</td></tr>"								
+				);
+		});
+	}
+
+	loadUserLog();	
+</script>
+

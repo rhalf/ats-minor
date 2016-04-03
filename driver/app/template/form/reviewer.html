@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div ng-controller="reviwerController" >
+        <div class="row" id="question" ng-repeat="question in questions">
+            <div class="col-md-12">
+                <form>
+                    <div class="col-md-6">
+                        <div class="image-frame">
+                            <img class="center-block" ng-src="image/question/{{question.image}}" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <p><strong>Ref #{{question.number}}) </strong> {{question.question}}</p>
+                        <div ng-repeat="option in question.options">
+                            <label>
+                                <input type="radio" ng-model="question.answer" name="radioValue" ng-value="{{$index}}" disabled="disabled"/> {{option}}
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  
+</body>
+</html>

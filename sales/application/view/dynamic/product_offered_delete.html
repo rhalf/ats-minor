@@ -1,0 +1,22 @@
+<div id='productOfferedDelete'>
+	
+</div>
+<script type="text/javascript">
+	$('#productOfferedDelete').append('<br/>');
+	$('#productOfferedDelete').append('Are you sure you want to remove this item with Id("' + productOffered.Id + '")');
+	$('#productOfferedDelete').append('<br/>');
+	$('#productOfferedDelete').append('<br/>');
+	$('#productOfferedDelete').append("<button id='buttonProductOfferedOk'>Ok</button>");
+	$('#buttonProductOfferedOk').button().click(function(){
+		$.post('application/model/service/product_offered_delete.php',{
+			Id:productOffered.Id
+		}, function(json){
+			var result = json.result[0];
+			if (result.Status == "SUCCESS") {
+				notify(result.Message);
+			} else {
+				notifyError(result.Message);
+			}
+		}, 'json');
+	});
+</script>

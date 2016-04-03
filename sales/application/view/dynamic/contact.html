@@ -1,0 +1,116 @@
+<div style="display:inline-blocked;padding:5px;">
+	<button id="contactAddNew">Add</button>
+	<button id="contactResfresh">Refresh</button>
+</div>
+
+<div class="datagrid">
+	<table class="contact">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Company</th>
+				<th>Person</th>
+				<th>Position</th>
+
+				<th>Email</th>
+				<th>Mobile</th>
+				<th>Telephone</th>
+				<th>Fax</th>
+				<th>Nationality</th>
+				<th>Option</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+<script type="text/javascript">
+	$('#contactAddNew').button({
+		icons: {
+			primary: "ui-icon-plusthick"
+		}
+	});
+	$('#contactAddNew').button().click(function(){
+		dialogContactAdd();
+	});
+
+	$('#contactResfresh').button({
+		icons: {
+			primary: "ui-icon-refresh"
+		}
+	});
+	$('#contactResfresh').button().click(function(){
+		ats.load(function(){
+			loadContact();
+		});
+	});
+
+	function loadContact() {
+		$('.contact tbody').remove();
+		$('.contact').append('<tbody></tbody>');
+		$.each(ats.ListContact, function(index, contact){
+			var company = ats.getObject(ats.ListCompany, contact.Company);
+			var country = ats.getObject(ats.ListCountry,contact.Country);
+
+
+			if (sessionUser.Privilege < 2) {
+				$('.contact tbody').append(
+					"<tr><td>" + 
+					contact.Id + "</td><td>" + 
+					company.Name + "</td><td>" + 
+					contact.Person + "</td><td>" + 
+					contact.Position + "</td><td>" + 
+					
+					contact.Email + "</td><td>" + 
+					contact.Mobile + "</td><td>" +
+					contact.Telephone + "</td><td>" +
+					contact.Fax + "</td><td>" +
+					country.Short + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ contact.Id + "' class='buttonContactUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"<button id='"+ contact.Id + "' class='buttonContactDelete'><span class='ui-icon ui-icon-trash'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			} else {
+				$('.contact tbody').append(
+					"<tr><td>" + 
+					contact.Id + "</td><td>" + 
+					company.Name + "</td><td>" + 
+					contact.Person + "</td><td>" +
+					contact.Position + "</td><td>" + 
+
+					contact.Email + "</td><td>" + 
+					contact.Mobile + "</td><td>" +
+					contact.Telephone + "</td><td>" +
+					contact.Fax + "</td><td>" +
+					country.Short + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ contact.Id + "' class='buttonContactUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			}
+		});
+
+$('.buttonContactUpdate').click(function () {
+	var id = this.id;
+	$.each(ats.ListContact,function( index, contact ){
+		if (contact.Id == id) {
+			dialogContactUpdate(contact);
+		}
+	});
+});
+$('.buttonContactDelete').click(function () {
+	var id = this.id;
+	$.each(ats.ListContact,function( index, contact){
+		if (contact.Id == id) {
+			dialogContactDelete(contact);
+		}
+	});
+});
+
+}
+
+loadContact();
+</script>
+

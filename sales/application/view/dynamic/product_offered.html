@@ -1,0 +1,112 @@
+<div style="display:inline-blocked;padding:5px;">
+	<button id="productOfferedAddNew">Add</button>
+	<button id="productOfferedResfresh">Refresh</button>
+</div>
+
+<div class="datagrid">
+	<table class="productOffered">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>DateTime</th>
+				<th>Company</th>
+				<th>ContactPerson</th>
+				<th>Product</th>
+				<th>ClientResponse</th>
+				<th>User</th>
+				<th>Option</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+<script type="text/javascript">
+	$('#productOfferedAddNew').button({
+		icons: {
+			primary: "ui-icon-plusthick"
+		}
+	});
+
+	$('#productOfferedAddNew').button().click(function(){
+		dialogProductOfferedAdd();
+	});
+
+	$('#productOfferedResfresh').button({
+		icons: {
+			primary: "ui-icon-refresh"
+		}
+	});
+	$('#productOfferedResfresh').button().click(function(){
+		ats.load(function () {
+			loadProductOffered();
+		});
+	});
+
+
+
+	function loadProductOffered() {
+		$('.productOffered tbody').remove();
+		$('.productOffered').append('<tbody></tbody>');
+
+		$.each(ats.ListProductOffered, function(index, productOffered) {
+			var company = ats.getObject(ats.ListCompany,productOffered.Company);
+			var contact = ats.getObject(ats.ListContact,productOffered.Contact);
+
+			var product = ats.getObject(ats.ListProduct,productOffered.Product);
+			var clientResponse = ats.getObject(ats.ListClientResponse, productOffered.ClientResponse);
+			var user = ats.getObject(ats.ListUser, productOffered.User);
+
+			if (sessionUser.Privilege < 2) {
+				$('.productOffered tbody').append(
+					"<tr><td>" + 
+					productOffered.Id + "</td><td>" + 	
+					productOffered.DateTime + "</td><td>" +  
+					company.Name + "</td><td>" +
+					contact.Person + "</td><td>" +
+					product.Name + "</td><td>" +
+					clientResponse.Name + "</td><td>" +
+					user.Name + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ productOffered.Id + "' class='buttonProductOfferedUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"<button id='"+ productOffered.Id + "' class='buttonProductOfferedDelete'><span class='ui-icon ui-icon-trash'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			} else {
+				$('.productOffered tbody').append(
+					"<tr><td>" + 
+					productOffered.Id + "</td><td>" + 	
+					productOffered.DateTime + "</td><td>" +  
+					company.Name + "</td><td>" +
+					contact.Person + "</td><td>" +
+					product.Name + "</td><td>" +
+					clientResponse.Name + "</td><td>" +
+					user.Name + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ productOffered.Id + "' class='buttonProductOfferedUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			}
+
+			$('.buttonProductOfferedUpdate').click(function () {
+				var id = this.id;
+				$.each(ats.ListProductOffered,function( index, productOffered){
+					if (productOffered.Id == id) {
+						dialogProductOfferedUpdate(productOffered);
+					}
+				});
+			});
+			$('.buttonProductOfferedDelete').click(function () {
+				var id = this.id;
+				$.each(ats.ListProductOffered,function( index, productOffered){
+					if (productOffered.Id == id) {
+						dialogProductOfferedDelete(productOffered);
+					}
+				});
+			});
+		});
+
+}
+loadProductOffered();
+</script>

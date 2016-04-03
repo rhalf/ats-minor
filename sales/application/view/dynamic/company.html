@@ -1,0 +1,123 @@
+<div style="display:inline-blocked;padding:5px;">
+
+		<button id="companyAddNew">Add</button>
+		<button id="companyResfresh">Refresh</button>
+		<button id="companySearch">Search</button>
+		<input name="companySearch" />
+</div>
+
+<div class="datagrid">
+	<table class="company">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>DateTime Created</th>
+				<th>Business Field</th>
+				<th>Status</th>
+				<th>Added By</th>
+				<th>Option</th>
+			</tr>
+		</thead>
+	</table>
+</div>
+
+<script type="text/javascript">
+	$('#companyAddNew').button({
+		icons: {
+			primary: "ui-icon-plusthick"
+		}
+	});
+	$('#companyAddNew').button().click(function(){
+		dialogCompanyAdd();
+	});
+	$('#companySearch').button({
+		icons: {
+			primary: "ui-icon-plusthick"
+		}
+	});
+	$('#companySearch').button().click(function(){
+		var name = $('[name="companySearch"]').val();
+		name = '%' + name + '%';
+		$.post('application/model/service/company_search.php',{Name:name}, function(json) {
+			loadCompany(json.company);    
+		},'json');
+	});
+
+
+	$('#companyResfresh').button({
+		icons: {
+			primary: "ui-icon-refresh"
+		}
+	});
+	$('#companyResfresh').button().click(function(){
+		ats.load(function(){
+			loadCompany(ats.ListCompany);
+		});
+	});
+
+	function loadCompany(listCompany) {
+		$('.company tbody').remove();
+		$('.company').append('<tbody></tbody>');
+		$.each(listCompany, function(index, company){
+			var businessField = ats.getObject(ats.ListBusinessField, company.BusinessField);
+			var status = ats.getObject(ats.ListStatus,company.Status);
+			var user = ats.getObject(ats.ListUser,company.AddedBy);
+
+			if (sessionUser.Privilege < 2) {
+				$('.company tbody').append(
+					"<tr><td>" + 
+					company.Id + "</td><td>" + 
+					company.Name + "</td><td>" + 
+					company.Description + "</td><td>" + 
+					company.DateTimeCreated + "</td><td>" + 
+					businessField.Name + "</td><td>" +
+					status.Name + "</td><td>" +
+					user.Name + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ company.Id + "' class='buttonCompanyUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"<button id='"+ company.Id + "' class='buttonCompanyDelete'><span class='ui-icon ui-icon-trash'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			} else {
+				$('.company tbody').append(
+					"<tr><td>" + 
+					company.Id + "</td><td>" + 
+					company.Name + "</td><td>" + 
+					company.Description + "</td><td>" + 
+					company.DateTimeCreated + "</td><td>" + 
+					businessField.Name + "</td><td>" +
+					status.Name + "</td><td>" +
+					user.Name + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ company.Id + "' class='buttonCompanyUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			}
+		});
+
+$('.buttonCompanyUpdate').click(function () {
+	var id = this.id;
+	$.each(ats.ListCompany,function( index, company ){
+		if (company.Id == id) {
+			dialogCompanyUpdate(company);
+		}
+	});
+});
+$('.buttonCompanyDelete').click(function () {
+	var id = this.id;
+	$.each(ats.ListCompany,function( index, company){
+		if (company.Id == id) {
+			dialogCompanyDelete(company);
+		}
+	});
+});
+
+}
+
+loadCompany(ats.ListCompany);
+</script>
+

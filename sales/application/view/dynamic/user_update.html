@@ -1,0 +1,75 @@
+<form>
+	<table>
+		<tr><td>Name</td><td><input type="text" name="userName"/></td></tr>
+		<tr><td colspan="2"><hr/></td></tr>
+		<tr><td>DateTimeEpired</td><td><input type="text" name="userDateTimeExpired"></td></tr>
+		<tr><td>Email</td><td><input name="userEmail"/></td></tr>
+		<tr><td>Privilege</td><td><select type="text" name="userPrivilege" /></td></tr>
+		<tr><td>Status</td><td><select type="text" name="userStatus" /></td></tr>
+		<tr><td colspan="2"><hr/></td></tr>
+
+	</table>
+</form>
+
+<button id="buttonUserUpdate">Update</button>
+
+<script type="text/javascript">
+	$('[name="userDateTimeExpired"]').datetimepicker({
+		dateFormat: 'yy-mm-dd',
+		timeFormat: 'HH:mm:ss'
+	});
+
+	$.each(ats.ListPrivilege, function(index,object){
+		$('[name="userPrivilege"]').append("<option value='"+ object.Id +"'>"+ object.Name +"</option>");
+	}); 
+	$.each(ats.ListStatus, function(index,object){
+		$('[name="userStatus"]').append("<option value='"+ object.Id +"'>"+ object.Name +"</option>");
+	}); 
+
+
+	$('[name="userName"]').val(user.Name);
+	$('[name="userDateTimeExpired"]').val(user.DateTimeExpired);
+	$('[name="userEmail"]').val(user.Email);
+	$('[name="userPrivilege"] option[value="'+ user.Privilege +'"]').attr('selected','selected');
+	$('[name="userStatus"] option[value="'+ user.Status +'"]').attr('selected','selected');
+
+
+	$('#buttonUserUpdate').button().click(function() {
+		var name = $('[name="userName"').val();
+		var dateTimeExpired = $('[name="userDateTimeExpired"]').val();
+		var email = $('[name="userEmail"]').val();
+		var privilege = $('[name="userPrivilege"]').val();
+		var status = $('[name="userStatus"]').val();
+		
+		
+		validate = new Validate();
+
+		if(
+			validate.IsEmpty(name) || 
+			validate.IsEmpty(dateTimeExpired) ||
+			validate.IsEmpty(email) || 
+			validate.IsEmpty(privilege) || 
+			validate.IsEmpty(status) 
+			) {
+			notifyError("Some field(s) is/are empty.");
+			return;
+		}
+
+
+	$.post('application/model/service/user_update.php',{
+		Id:user.Id,
+		Name:name,
+		DateTimeExpired:dateTimeExpired,
+		Email:email,
+		Privilege:privilege,
+		Status:status
+	}, function(json){
+		var result = json.result[0];
+		if (result.Status == "SUCCESS") {
+			notify(result.Message);
+		} else {
+			notifyError(result.Message);
+		}
+	}, 'json');
+});
+</script>

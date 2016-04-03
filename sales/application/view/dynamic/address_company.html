@@ -1,0 +1,111 @@
+<div style="display:inline-blocked;padding:5px;">
+	<button id="addressCompanyAddNew">Add</button>
+	<button id="addressCompanyResfresh">Refresh</button>
+</div>
+
+<div class="datagrid">
+	<table class="addressCompany">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Company</th>
+				<th>Country</th>
+				<th>City</th>
+				<th>Area</th>
+				<th>Detail</th>
+				<th>Latitude</th>
+				<th>Longitude</th>
+				<th>Option</th>
+
+			</tr>
+		</thead>
+	</table>
+</div>
+
+<script type="text/javascript">
+	$('#addressCompanyAddNew').button({
+		icons: {
+			primary: "ui-icon-plusthick"
+		}
+	});
+	$('#addressCompanyAddNew').button().click(function(){
+		dialogAddressCompanyAdd();
+	});
+
+	$('#addressCompanyResfresh').button({
+		icons: {
+			primary: "ui-icon-refresh"
+		}
+	});
+	$('#addressCompanyResfresh').button().click(function(){
+		ats.load(function(){
+			loadAddressCompany();
+		});
+	});
+
+	function loadAddressCompany() {
+		$('.addressCompany tbody').remove();
+		$('.addressCompany').append('<tbody></tbody>');
+		$.each(ats.ListAddressCompany, function(index, addressCompany){
+			var company = ats.getObject(ats.ListCompany, addressCompany.Company);
+
+
+			if (sessionUser.Privilege < 2) {
+				$('.addressCompany tbody').append(
+					"<tr><td>" + 
+					addressCompany.Id + "</td><td>" + 
+					company.Name + "</td><td>" + 
+					addressCompany.Country + "</td><td>" + 
+					addressCompany.City + "</td><td>" + 
+					addressCompany.Area + "</td><td>" + 
+					addressCompany.Detail + "</td><td>" +
+					addressCompany.Latitude + "</td><td>" +
+					addressCompany.Longitude + "</td><td>" +
+
+					"<span style='display: inline-block'>" +
+					"<button id='"+ addressCompany.Id + "' class='buttonAddressCompanyUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"<button id='"+ addressCompany.Id + "' class='buttonAddressCompanyDelete'><span class='ui-icon ui-icon-trash'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			} else {
+				$('.addressCompany tbody').append(
+					"<tr><td>" + 
+					company.Id + "</td><td>" + 
+					company.Name + "</td><td>" + 
+					addressCompany.Country + "</td><td>" + 
+					addressCompany.City + "</td><td>" + 
+					addressCompany.Area + "</td><td>" + 
+					addressCompany.Detail + "</td><td>" +
+						addressCompany.Latitude + "</td><td>" +
+					addressCompany.Longitude + "</td><td>" +
+					"<span style='display: inline-block'>" +
+					"<button id='"+ addressCompany.Id + "' class='buttonAddressCompanyUpdate'><span class='ui-icon ui-icon-pencil'></span></button>" +
+					"</span>" +
+					"</td></tr>"
+					);
+			}
+		});
+
+$('.buttonAddressCompanyUpdate').click(function () {
+	var id = this.id;
+	$.each(ats.ListAddressCompany,function( index, addressCompany ){
+		if (addressCompany.Id == id) {
+			dialogAddressCompanyUpdate(addressCompany);
+		}
+	});
+});
+$('.buttonAddressCompanyDelete').click(function () {
+	var id = this.id;
+	$.each(ats.ListAddressCompany,function( index, addressCompany){
+		if (addressCompany.Id == id) {
+			dialogAddressCompanyDelete(addressCompany);
+		}
+	});
+});
+
+}
+
+loadAddressCompany();
+</script>
+
